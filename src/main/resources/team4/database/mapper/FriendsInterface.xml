@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="team4.database.mapper.FriendsInterface">
+
+	<select id="getTeamList"
+		parameterType="team4.user.beans.TeamBean"
+		resultType="team4.user.beans.TeamBean">
+
+		SELECT * FROM TEAMLISTVIEW WHERE MBID= #{mbId}
+
+	</select>
+
+
+	<select id="getMemberList"
+		parameterType="team4.user.beans.TDetailsBean"
+		resultType="team4.user.beans.TDetailsBean">
+
+		SELECT * FROM MEMBERLISTVIEW WHERE TECODE = #{teCode}
+
+	</select>
+
+	<select id="getNowNumber" resultType="int">
+
+		select coalesce(max(to_number(substr(te_code,7,3))),0) as "TECODENUM" from
+		te where substr(te_code,1,6)= to_char(sysdate,'yyMMdd')
+	</select>
+
+	<insert id="insTeam" parameterType="team4.user.beans.TeamBean">
+
+		INSERT INTO TE VALUES(#{teCode},#{teName})
+
+	</insert>
+
+	<insert id="insTeam2"
+		parameterType="team4.user.beans.TDetailsBean">
+
+		INSERT INTO TD VALUES(#{teCode}, #{mbId}, #{cgCode})
+
+
+	</insert>
+
+	<select id="friendsList"
+		parameterType="team4.user.beans.TDetailsBean"
+		resultType="team4.user.beans.TDetailsBean">
+<!--  SELECT FR_RECEIVER AS "mbId" FROM FR WHERE (FR_REQUEST =#{mbId}) AND FR_ACCEPT = '1'
+UNION
+SELECT FR_REQUEST FROM FR WHERE (FR_RECEIVER=#{mbId}) AND FR_ACCEPT='1'-->
+
+SELECT FR_REQUEST AS "mbId" , 
+        MB.MB_NAME AS "mbName"
+FROM FR INNER JOIN MB ON FR.FR_REQUEST = MB.MB_ID
+WHERE FR_RECEIVER=#{mbId} AND FR_ACCEPT = '1'
+UNION
+SELECT FR_RECEIVER AS "mbId",
+MB.MB_NAME AS "mbName"
+FROM FR INNER JOIN MB ON FR.FR_RECEIVER = MB.MB_ID
+WHERE FR_REQUEST=#{mbId} AND FR_ACCEPT='1'
+
+	</select>
+	
+	<select id="searchList" parameterType="team4.user.beans.UserBean"  resultType="team4.user.beans.UserBean">
+	select mb_id as "uCode" , mb_name as "uName" from searchlistview where sword like '%' || #{search} || '%'
+	
+	</select>
+
+
+
+
+
+
+</mapper>

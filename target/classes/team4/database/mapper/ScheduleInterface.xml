@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="team4.database.mapper.ScheduleInterface">
+
+
+
+	<insert id="insAL"
+		parameterType="team4.user.beans.ScheduleBean">
+
+		INSERT INTO AL (AL_SDTECODE, AL_SDNUM, AL_PATH) VALUES
+		(#{teCode},#{num},#{path})
+
+	</insert>
+
+
+	<insert id="insSD" parameterType="team4.user.beans.ScheduleBean">
+
+		INSERT INTO SD (SD_TECODE, SD_NUM, SD_MBID, SD_TITLE, SD_DATE, SD_LOCATION, SD_CONTENTS, SD_PROCESS, SD_OPEN, SD_LOOP)
+		VALUES
+		(#{teCode},#{num},#{mbId},#{title},#{date},#{location},#{contents},#{process},#{open},#{loop})
+
+	</insert>
+
+	<select id="getMaxNum"
+		parameterType="team4.user.beans.ScheduleBean" resultType="int">
+		select nvl(max(sd_num),0) from sd where sd_tecode =#{teCode} and sd_mbid=#{mbId}
+	</select>
+	
+	
+	<select id="monthSchedule" parameterType="team4.user.beans.ScheduleBean" resultType="team4.user.beans.ScheduleBean">
+	SELECT * FROM SCHEDULEVIEW WHERE TO_CHAR("date", 'YYYYMM') = '202108' AND 
+	( "teCode" IN(SELECT TD_TECODE FROM TD WHERE TD_MBID=#{mbId}) AND "open" = 'O')
+    OR ("mbId"=#{mbId} AND "open" = 'N')
+	
+	</select>
+
+
+
+</mapper>
