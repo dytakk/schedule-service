@@ -1,3 +1,2 @@
-# scheduleservice
-scheduleservice
-일정관리를 개인 및 팀별로 추가하고 관리 하는 서비스
+# schedul-eservice
+설명 : 국비학원 수료중에 만들었던 일정관리 팀프로젝트입니다.
